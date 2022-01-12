@@ -1,37 +1,51 @@
 {
-	"name": "@tunebot/spotify",
-	"version": "1.0.0",
-	"private": false,
-	"description": "A spotify resolver",
-	"repository": "https://github.com/tuneorg/spotify",
-	"license": "MIT",
-	"author": "TuneBot <contact@tunebot.org>",
-	"main": "dist/index.js",
-	"scripts": {
-		"build": "npm run lint && npm run compile",
-		"compile": "tsc --build tsconfig.json",
-		"lint": "eslint . --ext .ts",
-		"lint:fix": "eslint . --ext .ts --fix"
-	},
-	"eslintConfig": {
-		"parserOptions": {
-			"project": "./tsconfig.json"
-		},
-		"extends": "@hazmi35/eslint-config/typescript"
-	},
-	"dependencies": {
-		"petitio": "^1.4.0"
-	},
-	"devDependencies": {
-		"@hazmi35/eslint-config": "^7.0.1",
-		"@types/node": "^17.0.8",
-		"@typescript-eslint/eslint-plugin": "^5.9.1",
-		"@typescript-eslint/parser": "^5.9.1",
-		"eslint": "^8.6.0",
-		"ts-node": "^10.4.0",
-		"typescript": "^4.5.4"
-	},
-	"engines": {
-		"node": ">=16.6.0"
-	}
+  "name": "@tuneorg/spotify",
+  "version": "1.0.0",
+  "private": false,
+  "description": "A spotify resolver",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tuneorg/spotify.git"
+  },
+  "license": "MIT",
+  "author": "TuneBot <contact@tunebot.org>",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npm run lint && npm run compile",
+    "compile": "tsc --build tsconfig.json",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": "@hazmi35/eslint-config/typescript"
+  },
+  "dependencies": {
+    "petitio": "^1.4.0"
+  },
+  "devDependencies": {
+    "@hazmi35/eslint-config": "^7.0.1",
+    "@types/node": "^17.0.8",
+    "@typescript-eslint/eslint-plugin": "^5.9.1",
+    "@typescript-eslint/parser": "^5.9.1",
+    "eslint": "^8.6.0",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  },
+  "engines": {
+    "node": ">=16.6.0"
+  },
+  "bugs": {
+    "url": "https://github.com/tuneorg/spotify/issues"
+  },
+  "homepage": "https://github.com/tuneorg/spotify#readme",
+  "keywords": [
+    "spotify",
+    "discord",
+    "bot",
+    "music",
+    "spotify-api"
+  ]
 }
