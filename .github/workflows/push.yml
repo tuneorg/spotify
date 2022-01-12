@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Installing Node.js v12
+      - name: Installing Node.js v16
         uses: actions/setup-node@v2
         with:
           node-version-file: .node-version
