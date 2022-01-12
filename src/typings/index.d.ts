@@ -1,5 +1,3 @@
-declare module "@tunebot/spotify";
-
 export interface SpotifyOptions {
     clientId: string;
     clientSecret: string;

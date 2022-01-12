@@ -10,6 +10,7 @@
   "license": "MIT",
   "author": "TuneBot <contact@tunebot.org>",
   "main": "dist/index.js",
+  "typings": "src/typings/index.d.ts",
   "scripts": {
     "build": "npm run lint && npm run compile",
     "compile": "tsc --build tsconfig.json",
