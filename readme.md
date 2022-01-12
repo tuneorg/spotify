@@ -1,3 +1,6 @@
+# Installation
+> npm install @tunebot/spotify
+
 # Basic Implementation
 
 ```ts
