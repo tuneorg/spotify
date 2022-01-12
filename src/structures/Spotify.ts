@@ -1,19 +1,57 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import fetch from "petitio";
 import { HTTPMethod } from "petitio/dist/lib/PetitioRequest";
-import { SpotifyOptions } from "../typings";
+import { Album } from "../methods/Album";
+import { Artist } from "../methods/Artist";
+import { Playlist } from "../methods/Playlist";
+import { Track } from "../methods/Track";
+import { SpotifyOptions, UnresolvedTrack } from "../typings";
 
 export class Spotify {
     private readonly options: SpotifyOptions;
     private token: string | null;
     private readonly baseURL = "https://api.spotify.com/v1";
+    private readonly regex = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(track|playlist|artist|album)[\/:]([A-Za-z0-9]+)/;
+
+    private readonly methods: Record<string, Album | Track | Playlist | Artist | undefined> = {
+        track: new Track(this),
+        artist: new Artist(this),
+        album: new Album(this),
+        playlist: new Playlist(this)
+    };
 
     public constructor(options: SpotifyOptions) {
         this.options = options;
         this.token = null;
     }
 
-    private async makeRequest(endpoint: string, method?: HTTPMethod): Promise<any> {
+    /** Determine the URL is a valid Spotify URL or not */
+    public isValidURL(url: string): boolean {
+        return this.regex.test(url);
+    }
+
+    public buildUnresolved(spotifyTrack: any): UnresolvedTrack {
+        return {
+            artists: spotifyTrack.artists.map((x: any) => x.name).join(", "),
+            duration: spotifyTrack.duration_ms,
+            isResolved: false,
+            originURL: spotifyTrack.external_urls.spotify,
+            title: spotifyTrack.name
+        };
+    }
+
+    public search(url: string): any {
+        const [, type, id] = this.regex.exec(url) ?? [];
+
+        const method = this.methods[type];
+        if (method) {
+            return method.resolve(id);
+        }
+
+        return null;
+    }
+
+    public async makeRequest(endpoint: string, method?: HTTPMethod): Promise<any> {
         if (!this.token) throw new Error("Spotify#renewToken must be called before making the requests");
         endpoint = endpoint.replace(/^\//gm, "");
 
