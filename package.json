@@ -1,5 +1,5 @@
 {
-  "name": "@tuneorg/spotify",
+  "name": "@tunebot/spotify",
   "version": "1.0.0",
   "private": false,
   "description": "A spotify resolver",
