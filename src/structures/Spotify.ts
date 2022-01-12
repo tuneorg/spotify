@@ -5,7 +5,7 @@ import { Album } from "../methods/Album";
 import { Artist } from "../methods/Artist";
 import { Playlist } from "../methods/Playlist";
 import { Track } from "../methods/Track";
-import { SpotifyOptions, UnresolvedTrack } from "../typings";
+import { SpotifyOptions, UnresolvedData, UnresolvedTrack } from "../typings";
 
 export class Spotify {
     private readonly options: SpotifyOptions;
@@ -40,7 +40,7 @@ export class Spotify {
         };
     }
 
-    public search(url: string): any {
+    public search(url: string): Promise<UnresolvedData> | null {
         const [, type, id] = this.regex.exec(url) ?? [];
 
         const method = this.methods[type];

@@ -1,4 +1,5 @@
 import { Spotify } from "../structures/Spotify";
+import { UnresolvedData } from "../typings";
 
 export class Artist {
     private readonly spotify: Spotify;
@@ -7,7 +8,7 @@ export class Artist {
         this.spotify = spotify;
     }
 
-    public async resolve(Id: string): Promise<any> {
+    public async resolve(Id: string): Promise<UnresolvedData> {
         try {
             const artist = await this.spotify.makeRequest(`/artists/${Id}/top-tracks?market=US`);
             const res = await this.spotify.makeRequest(`/artists/${Id}`);

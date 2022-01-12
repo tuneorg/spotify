@@ -11,3 +11,7 @@ export interface UnresolvedTrack {
     isResolved: boolean;
 }
 
+export interface UnresolvedData {
+    tracks: UnresolvedTrack[];
+    name?: string | undefined;
+}
