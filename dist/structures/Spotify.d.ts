@@ -1,5 +1,5 @@
 import { HTTPMethod } from "petitio/dist/lib/PetitioRequest";
-import { SpotifyOptions, UnresolvedTrack } from "../typings";
+import { SpotifyOptions, UnresolvedData, UnresolvedTrack } from "../typings";
 export declare class Spotify {
     private readonly options;
     private token;
@@ -10,7 +10,7 @@ export declare class Spotify {
     /** Determine the URL is a valid Spotify URL or not */
     isValidURL(url: string): boolean;
     buildUnresolved(spotifyTrack: any): UnresolvedTrack;
-    search(url: string): any;
+    search(url: string): Promise<UnresolvedData> | null;
     makeRequest(endpoint: string, method?: HTTPMethod): Promise<any>;
     renewToken(): Promise<void>;
 }

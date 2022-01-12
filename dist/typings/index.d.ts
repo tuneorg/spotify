@@ -9,3 +9,7 @@ export interface UnresolvedTrack {
     originURL: string;
     isResolved: boolean;
 }
+export interface UnresolvedData {
+    tracks: UnresolvedTrack[];
+    name?: string | undefined;
+}
