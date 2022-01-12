@@ -61,7 +61,7 @@ export class Spotify {
         return request.json();
     }
 
-    private async renewToken(): Promise<void> {
+    public async renewToken(): Promise<void> {
         const request = fetch("https://accounts.spotify.com/api/token?grant_type=client_credentials", "POST")
             .header("Authorization", `Basic ${Buffer.from(`${this.options.clientId}:${this.options.clientSecret}`).toString("base64")}`)
             .header("Content-Type", "application/x-www-form-urlencoded");

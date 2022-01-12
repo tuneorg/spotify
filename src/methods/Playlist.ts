@@ -9,13 +9,12 @@ export class Playlist {
 
     public async resolve(Id: string): Promise<any> {
         try {
-            const playlist = await this.spotify.makeRequest(`/playlist/${Id}`);
+            const playlist = await this.spotify.makeRequest(`/playlists/${Id}`);
             if (!playlist.tracks) return { tracks: [], name: undefined };
 
-            const tracks = playlist.tracks.map((track: any) => this.spotify.buildUnresolved(track));
+            const tracks = playlist.tracks.items.filter((x: any) => x.track.name).map((item: any) => this.spotify.buildUnresolved(item.track));
             let next = playlist.tracks.next;
 
-            /* eslint no-negated-condition: "off" */
             while (next) {
                 const nextPage = await this.spotify.makeRequest(next.split("v1")[1] as string);
                 tracks.push(...nextPage.items.filter((x: any) => x.track.name).map((item: any) => this.spotify.buildUnresolved(item.track)));

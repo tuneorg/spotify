@@ -12,7 +12,7 @@ export class Album {
             const album = await this.spotify.makeRequest(`/albums/${Id}`);
             if (!album.tracks) return { tracks: [], name: undefined };
 
-            const tracks = album.tracks.map((track: any) => this.spotify.buildUnresolved(track));
+            const tracks = album.tracks.items.map((track: any) => this.spotify.buildUnresolved(track));
 
             return { tracks, name: album.name };
         } catch (error) {

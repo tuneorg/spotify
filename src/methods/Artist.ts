@@ -9,12 +9,13 @@ export class Artist {
 
     public async resolve(Id: string): Promise<any> {
         try {
-            const artist = await this.spotify.makeRequest(`/artists/${Id}`);
+            const artist = await this.spotify.makeRequest(`/artists/${Id}/top-tracks?market=US`);
+            const res = await this.spotify.makeRequest(`/artists/${Id}`);
             if (!artist.tracks) return { tracks: [], name: undefined };
 
             const tracks = artist.tracks.map((track: any) => this.spotify.buildUnresolved(track));
 
-            return { tracks, name: artist.name };
+            return { tracks, name: res.name };
         } catch (error) {
             return { tracks: [], name: undefined };
         }
