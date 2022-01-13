@@ -3,7 +3,7 @@ export interface SpotifyOptions {
     clientSecret: string;
 }
 export interface UnresolvedTrack {
-    artists: string[];
+    artists: string;
     title: string;
     duration: number;
     originURL: string;
