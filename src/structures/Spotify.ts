@@ -32,7 +32,7 @@ export class Spotify {
 
     public buildUnresolved(spotifyTrack: any): UnresolvedTrack {
         return {
-            artists: spotifyTrack.artists.map((x: any) => x.name).join(", "),
+            artists: Array.isArray(spotifyTrack.artists) ? spotifyTrack.artists.map((x: any) => x.name).join(", ") : spotifyTrack.artists,
             duration: spotifyTrack.duration_ms,
             isResolved: false,
             originURL: spotifyTrack.external_urls.spotify,
