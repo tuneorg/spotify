@@ -11,7 +11,7 @@ export class Playlist {
     public async resolve(Id: string): Promise<UnresolvedData> {
         try {
             const playlist = await this.spotify.makeRequest(`/playlists/${Id}`);
-            if (!playlist.tracks) return { tracks: [], name: undefined };
+            if (!playlist.tracks) return { tracks: [], type: "PLAYLIST", name: undefined };
 
             const tracks = playlist.tracks.items.filter((x: any) => x.track.name).map((item: any) => this.spotify.buildUnresolved(item.track));
             let next = playlist.tracks.next;
@@ -22,9 +22,9 @@ export class Playlist {
                 next = nextPage.next;
             }
 
-            return { tracks, name: playlist.name };
+            return { tracks, type: "PLAYLIST", name: playlist.name };
         } catch (error) {
-            return { tracks: [], name: undefined };
+            return { tracks: [], type: "PLAYLIST", name: undefined };
         }
     }
 }

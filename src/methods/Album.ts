@@ -11,13 +11,13 @@ export class Album {
     public async resolve(Id: string): Promise<UnresolvedData> {
         try {
             const album = await this.spotify.makeRequest(`/albums/${Id}`);
-            if (!album.tracks) return { tracks: [], name: undefined };
+            if (!album.tracks) return { tracks: [], type: "ALBUM", name: undefined };
 
             const tracks = album.tracks.items.map((track: any) => this.spotify.buildUnresolved(track));
 
-            return { tracks, name: album.name };
+            return { tracks, type: "ALBUM", name: album.name };
         } catch (error) {
-            return { tracks: [], name: undefined };
+            return { tracks: [], type: "ALBUM", name: undefined };
         }
     }
 }

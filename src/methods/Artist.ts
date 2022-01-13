@@ -12,13 +12,13 @@ export class Artist {
         try {
             const artist = await this.spotify.makeRequest(`/artists/${Id}/top-tracks?market=US`);
             const res = await this.spotify.makeRequest(`/artists/${Id}`);
-            if (!artist.tracks) return { tracks: [], name: undefined };
+            if (!artist.tracks) return { tracks: [], type: "ARTIST", name: undefined };
 
             const tracks = artist.tracks.map((track: any) => this.spotify.buildUnresolved(track));
 
-            return { tracks, name: res.name };
+            return { tracks, type: "ARTIST", name: res.name };
         } catch (error) {
-            return { tracks: [], name: undefined };
+            return { tracks: [], type: "ARTIST", name: undefined };
         }
     }
 }

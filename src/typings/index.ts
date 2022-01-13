@@ -13,5 +13,6 @@ export interface UnresolvedTrack {
 
 export interface UnresolvedData {
     tracks: UnresolvedTrack[];
+    type: "TRACK" | "PLAYLIST" | "ALBUM" | "ARTIST";
     name?: string | undefined;
 }

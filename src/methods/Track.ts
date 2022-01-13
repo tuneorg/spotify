@@ -11,13 +11,13 @@ export class Track {
     public async resolve(Id: string): Promise<UnresolvedData> {
         try {
             const res = await this.spotify.makeRequest(`/tracks/${Id}`);
-            if (!res) return { tracks: [] };
+            if (!res) return { tracks: [], type: "TRACK" };
 
             const track = this.spotify.buildUnresolved(res);
 
-            return { tracks: [track] };
+            return { tracks: [track], type: "TRACK" };
         } catch (error) {
-            return { tracks: [] };
+            return { tracks: [], type: "TRACK" };
         }
     }
 }
