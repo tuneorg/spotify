@@ -5,6 +5,7 @@ import { Album } from "../methods/Album";
 import { Artist } from "../methods/Artist";
 import { Playlist } from "../methods/Playlist";
 import { Track } from "../methods/Track";
+import { Collection } from "@tuneorg/collection";
 import { SpotifyOptions, UnresolvedData, UnresolvedTrack } from "../typings";
 
 export class Spotify {
@@ -20,9 +21,15 @@ export class Spotify {
         playlist: new Playlist(this)
     };
 
+    private readonly cache: Collection<string, UnresolvedData> | null;
+    private readonly cacheLifetime: number;
+
     public constructor(options: SpotifyOptions) {
         this.options = options;
+        this.cacheLifetime = options.cacheLifeTime ?? 30 * 60 * 1000;
+        this.cache = options.cacheResults ? new Collection() : null;
         this.token = null;
+        options.cacheResults ? this.initSweeper() : null;
     }
 
     /** Determine the URL is a valid Spotify URL or not */
@@ -40,12 +47,19 @@ export class Spotify {
         };
     }
 
-    public search(url: string): Promise<UnresolvedData> | null {
+    public async search(url: string): Promise<UnresolvedData | null> {
         const [, type, id] = this.regex.exec(url) ?? [];
+
+        if (this.options.cacheResults) {
+            const existing = this.cache?.get(id);
+            if (existing) return existing;
+        }
 
         const method = this.methods[type];
         if (method) {
-            return method.resolve(id);
+            const resolve = await method.resolve(id).catch(() => null);
+            if (resolve && this.options.cacheResults) this.cache?.set(id, resolve);
+            return resolve;
         }
 
         return null;
@@ -71,5 +85,9 @@ export class Spotify {
         this.token = `Bearer ${access_token}`;
 
         setInterval(() => this.renewToken(), expires_in * 1000);
+    }
+
+    private initSweeper(): void {
+        setInterval(() => this.cache?.clear(), this.cacheLifetime);
     }
 }

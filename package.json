@@ -38,6 +38,7 @@
     "extends": "@hazmi35/eslint-config/typescript"
   },
   "dependencies": {
+    "@tuneorg/collection": "^1.0.0",
     "petitio": "^1.4.0"
   },
   "devDependencies": {

@@ -1,6 +1,8 @@
 export interface SpotifyOptions {
     clientId: string;
     clientSecret: string;
+    cacheResults: string;
+    cacheLifeTime?: number;
 }
 
 export interface UnresolvedTrack {
