@@ -1,6 +1,6 @@
 {
   "name": "@tuneorg/spotify",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": false,
   "description": "A spotify resolver",
   "repository": {
