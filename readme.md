@@ -11,6 +11,7 @@ const spotify = new Spotify({
    clientSecret: ""
 });
 (async () => {
+ await spotify.renewToken(); //must be invoked first
  const search = await spotfiy.search(url);
  console.log(search);
 })();
