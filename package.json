@@ -1,5 +1,5 @@
 {
-  "name": "@tunebot/spotify",
+  "name": "@tuneorg/spotify",
   "version": "1.2.4",
   "private": false,
   "description": "A spotify resolver",
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/tuneorg/spotify.git"
   },
   "license": "MIT",
-  "author": "TuneBot <contact@tunebot.org>",
+  "author": "Tune <contact@tunebot.org>",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
