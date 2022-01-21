@@ -25,7 +25,7 @@ jobs:
           check-latest: true
           registry-url: ${{ matrix.registry }}
       - name: Build TypeScript project
-        uses: npm install && npm run build
+        run: npm install && npm run build
       - name: Publish package to npm and GitHub packages registry
         run: npm publish --access public
         env:
