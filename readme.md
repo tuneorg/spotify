@@ -1,10 +1,10 @@
 # Installation
-> npm install @tunebot/spotify
+> npm install @tuneorg/spotify
 
 # Basic Implementation
 
 ```ts
-import { Spotify } from "@tunebot/spotify";
+import { Spotify } from "@tuneorg/spotify";
 
 const spotify = new Spotify({
    clientId: "",
