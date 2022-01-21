@@ -1,7 +1,7 @@
 export interface SpotifyOptions {
     clientId: string;
     clientSecret: string;
-    cacheResults: string;
+    cacheResults: boolean;
     cacheLifeTime?: number;
 }
 
