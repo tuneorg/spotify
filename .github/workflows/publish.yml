@@ -15,11 +15,18 @@ jobs:
           - registry: https://npm.pkg.github.com/
             token: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v2.4.0
-      - uses: actions/setup-node@v2.5.1
+      - name: Checkout repository
+        uses: actions/checkout@v2.4.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v2.5.1
         with:
           node-version-file: .node-version
+          cache: 'npm'
+          check-latest: true
           registry-url: ${{ matrix.registry }}
-      - run: npm publish --access public
+      - name: Build TypeScript project
+        uses: npm install && npm run build
+      - name: Publish package to npm and GitHub packages registry
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ matrix.token }}
