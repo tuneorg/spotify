@@ -23,6 +23,9 @@
     },
     "extends": "@hazmi35/eslint-config/typescript"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "petitio": "^1.4.0"
   },
