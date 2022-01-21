@@ -3,6 +3,17 @@
   "version": "1.0.0",
   "private": false,
   "description": "A spotify resolver",
+  "keywords": [
+    "spotify",
+    "discord",
+    "bot",
+    "music",
+    "spotify-api"
+  ],
+  "homepage": "https://github.com/tuneorg/spotify#readme",
+  "bugs": {
+    "url": "https://github.com/tuneorg/spotify/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tuneorg/spotify.git"
@@ -11,6 +22,9 @@
   "author": "Tune <contact@tunebot.org>",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "npm run lint && npm run compile",
     "compile": "tsc --build tsconfig.json",
@@ -23,9 +37,6 @@
     },
     "extends": "@hazmi35/eslint-config/typescript"
   },
-  "files": [
-    "dist"
-  ],
   "dependencies": {
     "petitio": "^1.4.0"
   },
@@ -40,16 +51,5 @@
   },
   "engines": {
     "node": ">=16.6.0"
-  },
-  "bugs": {
-    "url": "https://github.com/tuneorg/spotify/issues"
-  },
-  "homepage": "https://github.com/tuneorg/spotify#readme",
-  "keywords": [
-    "spotify",
-    "discord",
-    "bot",
-    "music",
-    "spotify-api"
-  ]
+  }
 }
