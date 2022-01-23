@@ -13,12 +13,12 @@ export class Playlist {
             const playlist = await this.spotify.makeRequest(`/playlists/${Id}`);
             if (!playlist.tracks) return { tracks: [], type: "PLAYLIST", name: undefined };
 
-            const tracks = playlist.tracks.items.filter((x: any) => x.track.name).map((item: any) => this.spotify.buildUnresolved(item.track));
+            const tracks = playlist.tracks.items.map((item: any) => this.spotify.buildUnresolved(item.track));
             let next = playlist.tracks.next;
 
             while (next) {
                 const nextPage = await this.spotify.makeRequest(next.split("v1")[1] as string);
-                tracks.push(...nextPage.items.filter((x: any) => x.track.name).map((item: any) => this.spotify.buildUnresolved(item.track)));
+                tracks.push(...nextPage.items.map((item: any) => this.spotify.buildUnresolved(item.track)));
                 next = nextPage.next;
             }
 

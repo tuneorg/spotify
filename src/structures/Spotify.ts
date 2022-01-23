@@ -58,7 +58,7 @@ export class Spotify {
         const method = this.methods[type];
         if (method) {
             const resolve = await method.resolve(id).catch(() => null);
-            if (resolve && this.options.cacheResults) this.cache?.set(id, resolve);
+            if (resolve?.tracks.length && this.options.cacheResults) this.cache?.set(id, resolve);
             return resolve;
         }
 
