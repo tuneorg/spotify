@@ -13,10 +13,10 @@ export class Track {
             const res = await this.spotify.makeRequest(`/tracks/${Id}`);
             if (!res) return { tracks: [], type: "TRACK" };
 
-            const track = this.spotify.buildUnresolved(res);
+            const track = Spotify.buildUnresolved(res);
 
             return { tracks: [track], type: "TRACK" };
-        } catch (error) {
+        } catch {
             return { tracks: [], type: "TRACK" };
         }
     }

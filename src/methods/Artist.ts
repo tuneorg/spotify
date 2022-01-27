@@ -14,10 +14,10 @@ export class Artist {
             const res = await this.spotify.makeRequest(`/artists/${Id}`);
             if (!artist.tracks) return { tracks: [], type: "ARTIST", name: undefined };
 
-            const tracks = artist.tracks.map((track: any) => this.spotify.buildUnresolved(track));
+            const tracks = artist.tracks.map((track: any) => Spotify.buildUnresolved(track));
 
             return { tracks, type: "ARTIST", name: res.name };
-        } catch (error) {
+        } catch {
             return { tracks: [], type: "ARTIST", name: undefined };
         }
     }
