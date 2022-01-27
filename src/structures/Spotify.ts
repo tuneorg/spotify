@@ -70,6 +70,6 @@ export class Spotify {
 
         this.token = `Bearer ${access_token}`;
 
-        setInterval(() => this.renewToken(), expires_in * 1000);
+        setTimeout(() => this.renewToken(), expires_in * 1000);
     }
 }
