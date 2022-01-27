@@ -12,9 +12,9 @@ export class Spotify {
     private readonly options: SpotifyOptions;
     private token: string | null;
     private readonly baseURL = "https://api.spotify.com/v1";
-    private readonly regex = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(track|playlist|artist|album)[\/:]([A-Za-z0-9]+)/;
+    private readonly regex = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(?<TYPE>track|playlist|artist|album)[/:](?<ID>[A-Za-z0-9]+)/;
 
-    private readonly methods: Record<string, Album | Track | Playlist | Artist | undefined> = {
+    private readonly methods: Record<string, Album | Artist | Playlist | Track | undefined> = {
         track: new Track(this),
         artist: new Artist(this),
         album: new Album(this),
@@ -29,22 +29,13 @@ export class Spotify {
         this.cacheLifetime = options.cacheLifeTime ?? 30 * 60 * 1000;
         this.cache = options.cacheResults ? new Collection() : null;
         this.token = null;
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         options.cacheResults ? this.initSweeper() : null;
     }
 
     /** Determine the URL is a valid Spotify URL or not */
     public isValidURL(url: string): boolean {
         return this.regex.test(url);
-    }
-
-    public buildUnresolved(spotifyTrack: any): UnresolvedTrack {
-        return {
-            artists: Array.isArray(spotifyTrack.artists) ? spotifyTrack.artists.map((x: any) => x.name).join(", ") : spotifyTrack.artists,
-            duration: spotifyTrack.duration_ms,
-            isResolved: false,
-            originURL: spotifyTrack.external_urls.spotify,
-            title: spotifyTrack.name
-        };
     }
 
     public async search(url: string): Promise<UnresolvedData | null> {
@@ -82,12 +73,22 @@ export class Spotify {
 
         const { access_token, expires_in } = await request.json();
 
-        this.token = `Bearer ${access_token}`;
+        this.token = `Bearer ${access_token as string}`;
 
         setTimeout(() => this.renewToken(), expires_in * 1000);
     }
 
     private initSweeper(): void {
         setInterval(() => this.cache?.clear(), this.cacheLifetime);
+    }
+
+    public static buildUnresolved(spotifyTrack: any): UnresolvedTrack {
+        return {
+            artists: Array.isArray(spotifyTrack.artists) ? spotifyTrack.artists.map((x: any) => x.name).join(", ") : spotifyTrack.artists,
+            duration: spotifyTrack.duration_ms,
+            isResolved: false,
+            originURL: spotifyTrack.external_urls.spotify,
+            title: spotifyTrack.name
+        };
     }
 }

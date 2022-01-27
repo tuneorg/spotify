@@ -35,14 +35,18 @@
     "parserOptions": {
       "project": "./tsconfig.json"
     },
-    "extends": "@hazmi35/eslint-config/typescript"
+    "extends": "@hazmi35/eslint-config/typescript/node",
+    "rules": {
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-call": "off"
+    }
   },
   "dependencies": {
     "@tuneorg/collection": "^1.0.0",
     "petitio": "^1.4.0"
   },
   "devDependencies": {
-    "@hazmi35/eslint-config": "^7.0.1",
+    "@hazmi35/eslint-config": "^8.1.1",
     "@types/node": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^5.9.1",
     "@typescript-eslint/parser": "^5.9.1",
