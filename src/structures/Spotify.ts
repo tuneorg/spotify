@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 /* eslint-disable @typescript-eslint/naming-convention */
 import fetch from "petitio";
 import { HTTPMethod } from "petitio/dist/lib/PetitioRequest";
@@ -6,7 +7,8 @@ import { Artist } from "../methods/Artist";
 import { Playlist } from "../methods/Playlist";
 import { Track } from "../methods/Track";
 import { Collection } from "@tuneorg/collection";
-import { SpotifyOptions, UnresolvedData, UnresolvedTrack } from "../typings";
+import { RecommendationOptions, SpotifyOptions, UnresolvedData, UnresolvedTrack } from "../typings";
+import { URLSearchParams } from "url";
 
 export class Spotify {
     private readonly options: SpotifyOptions;
@@ -56,6 +58,27 @@ export class Spotify {
         return null;
     }
 
+    public async getRecommendations(options: RecommendationOptions): Promise<UnresolvedData> {
+        const _opts = {};
+
+        for (const [key, value] of Object.entries(options)) {
+            if (Object.prototype.toString.call(value) === "[object Array]") _opts[key] = value.join(",");
+            _opts[key] = value;
+        }
+
+        const searchParams = new URLSearchParams(_opts);
+        try {
+            const res = await this.makeRequest(`/recommendations?${searchParams.toString()}`);
+            if (!res.tracks) return { name: undefined, tracks: [], type: "RECOMMENDATION" };
+
+            const tracks = res.tracks.map((x: any) => Spotify.buildUnresolved(x));
+
+            return { tracks, type: "RECOMMENDATION", name: "Unknown Title" };
+        } catch {
+            return { tracks: [], type: "RECOMMENDATION", name: undefined };
+        }
+    }
+
     public async makeRequest(endpoint: string, method?: HTTPMethod): Promise<any> {
         if (!this.token) throw new Error("Spotify#renewToken must be called before making the requests");
         endpoint = endpoint.replace(/^\//gm, "");
@@ -82,10 +105,13 @@ export class Spotify {
         setInterval(() => this.cache?.clear(), this.cacheLifetime);
     }
 
+    // eslint-disable-next-line @typescript-eslint/member-ordering
     public static buildUnresolved(spotifyTrack: any): UnresolvedTrack {
         return {
-            artists: Array.isArray(spotifyTrack.artists) ? spotifyTrack.artists.map((x: any) => x.name).join(", ") : spotifyTrack.artists,
+            artists: spotifyTrack.artists.map((x: any) => x.name).join(", "),
+            artistsId: spotifyTrack.artists.map((x: any) => x.id),
             duration: spotifyTrack.duration_ms,
+            thumbnail: spotifyTrack.album.images[0].url ?? null,
             isResolved: false,
             originURL: spotifyTrack.external_urls.spotify,
             title: spotifyTrack.name
