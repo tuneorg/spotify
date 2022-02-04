@@ -1,2 +1,4 @@
-export * from "./structures/Spotify";
+import { Spotify } from "./structures/Spotify";
 export * from "./typings";
+
+export default { Spotify };
