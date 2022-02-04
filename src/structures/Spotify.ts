@@ -62,7 +62,7 @@ export class Spotify {
         const _opts = {};
 
         for (const [key, value] of Object.entries(options)) {
-            if (Object.prototype.toString.call(value) === "[object Array]") _opts[key] = value.join(",");
+            if (Array.isArray(value)) _opts[key] = value.join(",");
             _opts[key] = value;
         }
 
