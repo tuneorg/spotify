@@ -1,2 +1,2 @@
 export * from "./typings";
-export * from "./structures/Spotify" 
+export * from "./structures/Spotify";
