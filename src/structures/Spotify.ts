@@ -90,11 +90,24 @@ export class Spotify {
     }
 
     public async renewToken(): Promise<void> {
-        const request = fetch("https://accounts.spotify.com/api/token?grant_type=client_credentials", "POST")
+        const request = await fetch("https://accounts.spotify.com/api/token?grant_type=client_credentials", "POST")
             .header("Authorization", `Basic ${Buffer.from(`${this.options.clientId}:${this.options.clientSecret}`).toString("base64")}`)
-            .header("Content-Type", "application/x-www-form-urlencoded");
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .send();
 
-        const { access_token, expires_in } = await request.json();
+        let json;
+
+        try {
+            json = request.json();
+        } catch (e) {
+            console.error(e);
+            console.log(request.statusCode);
+            console.log(request.text()); // see what the actual response was to learn how to handle it next time
+            setTimeout(() => this.renewToken(), 5000); // try again after 5 seconds
+            return;
+        }
+
+        const { access_token, expires_in } = json;
 
         this.token = `Bearer ${access_token as string}`;
 
