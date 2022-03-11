@@ -98,11 +98,11 @@ export class Spotify {
         let json;
 
         try {
-            json = await request.json();
+            json = request.json();
         } catch (e) {
             console.error(e);
             console.log(request.statusCode);
-            console.log(await request.text()); // see what the actual response was to learn how to handle it next time
+            console.log(request.text()); // see what the actual response was to learn how to handle it next time
             setTimeout(() => this.renewToken(), 5000); // try again after 5 seconds
             return;
         }
