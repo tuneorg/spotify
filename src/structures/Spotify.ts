@@ -124,10 +124,11 @@ export class Spotify {
             artists: spotifyTrack.artists.map((x: any) => x.name).join(", "),
             artistsId: spotifyTrack.artists.map((x: any) => x.id),
             duration: spotifyTrack.duration_ms,
-            thumbnail: spotifyTrack.album.images[0].url ? spotifyTrack.album.images[0].url : null,
+            thumbnail: spotifyTrack.album?.images[0].url ?? null,
             isResolved: false,
             originURL: spotifyTrack.external_urls.spotify,
-            title: spotifyTrack.name
+            title: spotifyTrack.name,
+            isrc: spotifyTrack.external_ids?.isrc ?? null
         };
     }
 }

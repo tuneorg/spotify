@@ -14,7 +14,8 @@ export interface UnresolvedTrack {
     duration: number;
     thumbnail: string | null;
     originURL: string;
-    isResolved: boolean;
+    isResolved: false;
+    isrc: string | null;
 }
 
 export interface UnresolvedData {
