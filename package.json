@@ -38,7 +38,8 @@
     "extends": "@hazmi35/eslint-config/typescript/node",
     "rules": {
       "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/no-unsafe-call": "off"
+      "@typescript-eslint/no-unsafe-call": "off",
+      "multiline-comment-style": "off"
     }
   },
   "dependencies": {
