@@ -42,7 +42,8 @@
     }
   },
   "dependencies": {
-    "@tuneorg/collection": "^1.0.0"
+    "@tuneorg/collection": "^1.0.0",
+    "undici": "^5.0.0"
   },
   "devDependencies": {
     "@hazmi35/eslint-config": "^8.1.1",
