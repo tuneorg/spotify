@@ -3,11 +3,10 @@ import { URL } from "node:url";
 
 export class RequestHandler {
     private readonly pool: Pool;
-    private token?: string;
+    private token: string | undefined = undefined;
 
     public constructor(public readonly baseURL: string) {
         this.pool = new Pool(new URL(this.baseURL));
-        this.token = undefined;
     }
 
     public applyToken(token: string): void {
