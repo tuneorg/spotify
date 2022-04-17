@@ -1,19 +1,19 @@
 /* eslint-disable sort-keys */
 /* eslint-disable @typescript-eslint/naming-convention */
-import fetch from "petitio";
-import { HTTPMethod } from "petitio/dist/lib/PetitioRequest";
+import { Pool, Dispatcher, request } from "undici";
 import { Album } from "../methods/Album";
 import { Artist } from "../methods/Artist";
 import { Playlist } from "../methods/Playlist";
 import { Track } from "../methods/Track";
 import { Collection } from "@tuneorg/collection";
 import { RecommendationOptions, SpotifyOptions, UnresolvedData, UnresolvedTrack } from "../typings";
-import { URLSearchParams } from "url";
+import { URL, URLSearchParams } from "node:url";
 
 export class Spotify {
+    private readonly pool: Pool;
     private readonly options: SpotifyOptions;
     private token: string | null;
-    private readonly baseURL = "https://api.spotify.com/v1";
+    private readonly baseURL = "https://api.spotify.com/";
     private readonly regex = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(?<TYPE>track|playlist|artist|album)[/:](?<ID>[A-Za-z0-9]+)/;
 
     private readonly methods: Record<string, Album | Artist | Playlist | Track | undefined> = {
@@ -33,6 +33,7 @@ export class Spotify {
         this.token = null;
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         options.cacheResults ? this.initSweeper() : null;
+        this.pool = new Pool(new URL(this.baseURL));
     }
 
     /** Determine the URL is a valid Spotify URL or not */
@@ -79,30 +80,38 @@ export class Spotify {
         }
     }
 
-    public async makeRequest(endpoint: string, method?: HTTPMethod): Promise<any> {
+    public makeRequest(endpoint: string, method: Dispatcher.HttpMethod = "GET"): Promise<any> {
         if (!this.token) throw new Error("Spotify#renewToken must be called before making the requests");
         endpoint = endpoint.replace(/^\//gm, "");
-
-        const request = fetch(`${this.baseURL}/${endpoint}`, method)
-            .header("Authorization", this.token);
-
-        return request.json();
+        return new Promise((resolve, reject) => {
+            this.pool.request({
+                path: `/v1/${endpoint}`,
+                method,
+                headers: {
+                    authorization: this.token!
+                }
+            })
+                .then(r => resolve(r.body.json()))
+                .catch(e => reject(e));
+        });
     }
 
     public async renewToken(): Promise<void> {
-        const request = await fetch("https://accounts.spotify.com/api/token?grant_type=client_credentials", "POST")
-            .header("Authorization", `Basic ${Buffer.from(`${this.options.clientId}:${this.options.clientSecret}`).toString("base64")}`)
-            .header("Content-Type", "application/x-www-form-urlencoded")
-            .send();
+        const req = await request("https://accounts.spotify.com/api/token?grant_type=client_credentials", {
+            headers: {
+                authorization: `Basic ${Buffer.from(`${this.options.clientId}:${this.options.clientSecret}`).toString("base64")}`,
+                "content-type": "application/x-www-form-urlencoded"
+            },
+            method: "POST"
+        });
 
         let json;
 
         try {
-            json = request.json();
+            json = await req.body.json();
         } catch (e) {
             console.error(e);
-            console.log(request.statusCode);
-            console.log(request.text()); // see what the actual response was to learn how to handle it next time
+            console.log(await req.body.text()); // see what the actual response was to learn how to handle it next time
             setTimeout(() => this.renewToken(), 5000); // try again after 5 seconds
             return;
         }
