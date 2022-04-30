@@ -47,20 +47,15 @@ export class SpotifyClient {
             case "track": {
                 return this.track?.resolve(id);
             }
-                break;
             case "artist": {
                 return this.artist?.resolve(id);
             }
-                break;
             case "album": {
                 return this.album?.resolve(id);
             }
-                break;
             case "playlist": {
                 return this.playlist?.resolve(id);
             }
-            default:
-                return undefined;
         }
     }
 
