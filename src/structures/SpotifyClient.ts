@@ -1,5 +1,5 @@
 import { RequestHandler } from "./RequestHandler";
-import { AccessTokenResponse, SpotifyClientOptions } from "../typings";
+import { AccessTokenResponse, RecommendationsOptions, SpotifyClientOptions } from "../typings";
 import { validateClientOptions } from "../validators/clientValidator";
 import { request } from "undici";
 import { Album } from "../managers/Album";
@@ -7,12 +7,15 @@ import { Artist } from "../managers/Artist";
 import { Track } from "../managers/Track";
 import { Playlist } from "../managers/Playlist";
 import { SpotifyTrackList } from "./SpotifyTrackList";
+import { Recommendations } from "../managers/Recommendations";
+import { URLSearchParams } from "node:url";
 
 export class SpotifyClient {
     private album!: Album | null;
     private artist!: Artist | null;
     private track!: Track | null;
     private playlist!: Playlist | null;
+    private recommendations!: Recommendations | null;
     private readonly request: RequestHandler;
     private readonly baseURL = "https://api.spotify.com/";
     private readonly regex = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(?<TYPE>track|playlist|artist|album)[/:](?<ID>[A-Za-z0-9]+)/;
@@ -59,6 +62,18 @@ export class SpotifyClient {
         }
     }
 
+    public async searchRecommendations(options: RecommendationsOptions): Promise<SpotifyTrackList | undefined> {
+        const _opts = {};
+
+        for (const [key, value] of Object.entries(options)) {
+            if (Array.isArray(value)) _opts[key] = value.join(",");
+            _opts[key] = value;
+        }
+
+        const searchParams = new URLSearchParams(_opts);
+        return this.recommendations?.resolve(searchParams.toString());
+    }
+
     public async renewToken(): Promise<void> {
         const result = await this.fetchToken();
         if (typeof result !== "object") throw new RangeError("SpotifyClient#fetchToken: An error occured while fetching the bearer token");
@@ -68,6 +83,7 @@ export class SpotifyClient {
         this.album = new Album(this.request);
         this.playlist = new Playlist(this.request);
         this.artist = new Artist(this.request);
+        this.recommendations = new Recommendations(this.request);
         setTimeout(_ => this.renewToken(), (expires_in * 1000) - 100);
     }
 }
