@@ -3,7 +3,7 @@ import { SpotifyTrack } from "./SpotifyTrack";
 
 export class SpotifyTrackList {
     public readonly type: TrackListType;
-    public readonly playlistInfo?: {
+    public readonly additionalInfo?: {
         name: string;
         duration: number;
     };
@@ -15,7 +15,7 @@ export class SpotifyTrackList {
     public constructor(data: TrackListData) {
         this.type = data.type;
         this.tracks = data.tracks.map(track => new SpotifyTrack(track));
-        this.playlistInfo = this.type === "PLAYLIST" ? data.playlistInfo : undefined;
+        this.additionalInfo = ["ALBUM", "PLAYLIST"].includes(this.type) ? data.additionalInfo : undefined;
         this.exception = data.exception ?? undefined;
     }
 }

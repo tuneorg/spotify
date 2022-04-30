@@ -19,9 +19,10 @@ export interface TrackArtist {
 
 export interface TrackListData {
     tracks: APITrack[] | [];
-    playlistInfo?: {
+    additionalInfo?: {
         name: string;
         duration: number;
+        coverPicture?: string;
     };
     exception?: TrackListException;
     type: TrackListType;
@@ -39,20 +40,40 @@ export interface TrackListException {
 export interface APITrack {
     type: "track";
     name: string;
-    external_urls: {
-        spotify: string;
+    external_urls?: {
+        spotify: string | null;
     };
     external_ids?: {
         isrc?: string;
     };
     duration_ms: number;
-    artists: APITrackArtist[];
+    artists?: APITrackArtist[];
     album?: {
-        images: APITrackImage[];
+        images: APIImage[];
     };
 }
 
-export interface APITrackImage {
+export interface APIAlbum {
+    id: string;
+    name: string;
+    tracks: {
+        items: APITrack[];
+        next: string | null;
+    };
+    images: APIImage[] | [];
+}
+
+export interface APIPlaylist {
+    id: string;
+    name: string;
+    tracks: {
+        items: APITrack[];
+        next: string | null;
+    };
+    images: APIImage[] | [];
+}
+
+export interface APIImage {
     height: number;
     width: number;
     url: string;
@@ -65,4 +86,14 @@ export interface APITrackArtist {
     name: string;
     id: string;
     type: "artist";
+}
+
+export interface APIArtist {
+    id: string;
+    name: string;
+    images: APIImage[];
+}
+
+export interface APIArtistTracks {
+    tracks: APITrack[];
 }
