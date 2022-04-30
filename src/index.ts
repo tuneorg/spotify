@@ -1,4 +1,4 @@
-export * from "./constants/endpoints";
+export * as Constants from "./constants";
 export * from "./typings";
 export * from "./managers/Album";
 export * from "./managers/Artist";
