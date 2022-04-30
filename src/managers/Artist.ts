@@ -8,7 +8,7 @@ export class Artist {
 
     public async resolve(artistId: string): Promise<SpotifyTrackList> {
         try {
-            const request = await this.request.make<APIArtist>(artist(artistId), "GET");
+            const response = await this.request.make<APIArtist>(artist(artistId), "GET");
 
             const topTracks = await this.request.make<APIArtistTracks>(`${artistTracks(artistId)}`, "GET");
 
@@ -16,9 +16,9 @@ export class Artist {
                 type: "ALBUM",
                 tracks: topTracks.tracks,
                 additionalInfo: {
-                    name: request.name,
+                    name: response.name,
                     duration: topTracks.tracks.reduce((a, b) => a + b.duration_ms, 0),
-                    coverPicture: request.images[0].url
+                    coverPicture: response.images[0].url
                 }
             });
         } catch (e: any) {

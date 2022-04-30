@@ -1,4 +1,4 @@
-import { album, albumTracks } from "../constants/endpoints";
+import { album } from "../constants/endpoints";
 import { RequestHandler } from "../structures/RequestHandler";
 import { SpotifyTrackList } from "../structures/SpotifyTrackList";
 import { APIAlbum } from "../typings";
@@ -8,33 +8,25 @@ export class Album {
 
     public async resolve(albumId: string): Promise<SpotifyTrackList> {
         try {
-            const request = await this.request.make<APIAlbum>(album(albumId), "GET");
+            const response = await this.request.make<APIAlbum>(album(albumId), "GET");
             const completeTracks = [];
-            let nextURL: string | null;
 
-            if (request.tracks.items.length) {
-                const tracks = await this.request.make<APIAlbum["tracks"]>(`${albumTracks(albumId, 50)}`, "GET");
-                nextURL = tracks.next;
-                completeTracks.push(...tracks.items);
-                if (tracks.next) {
-                    while (tracks.next) {
-                        const nextTracks = await this.request.make<APIAlbum["tracks"]>(nextURL!);
-                        nextURL = nextTracks.next;
-                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                        if (nextTracks.items) {
-                            completeTracks.push(...nextTracks.items);
-                        } else { tracks.next = null; }
-                    }
-                }
+            const tracks = response.tracks;
+            completeTracks.push(...tracks.items);
+            let nextURL: string | null = tracks.next;
+            while (nextURL) {
+                const nextTracks = await this.request.make<APIAlbum["tracks"]>(nextURL);
+                completeTracks.push(...nextTracks.items);
+                nextURL = nextTracks.next;
             }
 
             return new SpotifyTrackList({
                 type: "ALBUM",
                 tracks: completeTracks,
                 additionalInfo: {
-                    name: request.name,
+                    name: response.name,
                     duration: completeTracks.reduce((a, b) => a + b.duration_ms, 0),
-                    coverPicture: request.images[0].url
+                    coverPicture: response.images[0].url
                 }
             });
         } catch (e: any) {

@@ -8,11 +8,11 @@ export class Track {
 
     public async resolve(trackId: string): Promise<SpotifyTrackList> {
         try {
-            const request = await this.request.make<APITrack>(track(trackId), "GET");
+            const response = await this.request.make<APITrack>(track(trackId), "GET");
 
             return new SpotifyTrackList({
                 type: "TRACK",
-                tracks: [request]
+                tracks: [response]
             });
         } catch (e: any) {
             return new SpotifyTrackList({
