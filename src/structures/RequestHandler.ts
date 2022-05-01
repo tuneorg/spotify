@@ -3,7 +3,7 @@ import { URL } from "node:url";
 
 export class RequestHandler {
     private readonly pool: Pool;
-    private token: string | undefined = undefined;
+    private token: string | null = null;
 
     public constructor(public readonly baseURL: string) {
         this.pool = new Pool(new URL(this.baseURL));
@@ -20,7 +20,7 @@ export class RequestHandler {
                 path: endpoint,
                 method,
                 headers: {
-                    authorization: this.token
+                    authorization: this.token!
                 }
             })
                 .then(result => resolve(result.body.json()))

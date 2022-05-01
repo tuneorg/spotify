@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-export type TrackListType = "ALBUM" | "ARTIST" | "PLAYLIST" | "RECOMMENDATION" | "TRACK";
+export type TrackListType = "ALBUM" | "ARTIST" | "NO_MATCHES" | "PLAYLIST" | "RECOMMENDATIONS" | "TRACK";
 
 export interface SpotifyClientOptions {
     clientId: string;

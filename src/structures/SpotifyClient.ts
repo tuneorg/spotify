@@ -9,20 +9,23 @@ import { Playlist } from "../managers/Playlist";
 import { SpotifyTrackList } from "./SpotifyTrackList";
 import { Recommendations } from "../managers/Recommendations";
 import { URLSearchParams } from "node:url";
+import { Manager } from "../abstracts/Manager";
 
 export class SpotifyClient {
-    private album!: Album | null;
-    private artist!: Artist | null;
-    private track!: Track | null;
-    private playlist!: Playlist | null;
-    private recommendations!: Recommendations | null;
-    private readonly request: RequestHandler;
     private readonly baseURL = "https://api.spotify.com/";
+    private readonly request = new RequestHandler(this.baseURL);
+    private readonly managers = {
+        album: new Album(this.request),
+        artist: new Artist(this.request),
+        playlist: new Playlist(this.request),
+        track: new Track(this.request),
+        recommendations: new Recommendations(this.request)
+    };
+
     private readonly regex = /(?:https:\/\/open\.spotify\.com\/|spotify:)(?:.+)?(?<TYPE>track|playlist|artist|album)[/:](?<ID>[A-Za-z0-9]+)/;
 
     public constructor(private readonly options: SpotifyClientOptions) {
         validateClientOptions(options);
-        this.request = new RequestHandler(this.baseURL);
     }
 
     public isValidURL(url: string): boolean {
@@ -43,35 +46,23 @@ export class SpotifyClient {
         });
     }
 
-    public async search(query: string): Promise<SpotifyTrackList | undefined> {
+    public search(query: string): Promise<SpotifyTrackList> {
         const [, type, id] = this.regex.exec(query) ?? [];
-
-        switch (type) {
-            case "track": {
-                return this.track?.resolve(id);
-            }
-            case "artist": {
-                return this.artist?.resolve(id);
-            }
-            case "album": {
-                return this.album?.resolve(id);
-            }
-            case "playlist": {
-                return this.playlist?.resolve(id);
-            }
-        }
+        const manager: Manager | undefined = this.managers[type];
+        if (!manager) throw Error("Invalid Spotify URL.");
+        return manager.resolve(id);
     }
 
-    public async searchRecommendations(options: RecommendationsOptions): Promise<SpotifyTrackList | undefined> {
+    public searchRecommendations(options: RecommendationsOptions): Promise<SpotifyTrackList> {
         const _opts = {};
 
         for (const [key, value] of Object.entries(options)) {
             if (Array.isArray(value)) _opts[key] = value.join(",");
-            _opts[key] = value;
+            else _opts[key] = value;
         }
 
         const searchParams = new URLSearchParams(_opts);
-        return this.recommendations?.resolve(searchParams.toString());
+        return this.managers.recommendations.resolve(searchParams.toString());
     }
 
     public async renewToken(): Promise<void> {
@@ -79,11 +70,6 @@ export class SpotifyClient {
         if (typeof result !== "object") throw new RangeError("SpotifyClient#fetchToken: An error occured while fetching the bearer token");
         const { access_token, expires_in } = result;
         this.request.applyToken(`Bearer ${access_token}`);
-        this.track = new Track(this.request);
-        this.album = new Album(this.request);
-        this.playlist = new Playlist(this.request);
-        this.artist = new Artist(this.request);
-        this.recommendations = new Recommendations(this.request);
-        setTimeout(_ => this.renewToken(), (expires_in * 1000) - 100);
+        setTimeout(() => this.renewToken(), (expires_in * 1000) - 100);
     }
 }

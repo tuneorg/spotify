@@ -1,16 +1,14 @@
+import { Manager } from "../abstracts/Manager";
 import { artist, artistTracks } from "../constants/endpoints";
-import { RequestHandler } from "../structures/RequestHandler";
 import { SpotifyTrackList } from "../structures/SpotifyTrackList";
 import { APIArtist, APIArtistTracks } from "../typings";
 
-export class Artist {
-    public constructor(private readonly request: RequestHandler) {}
-
+export class Artist extends Manager {
     public async resolve(artistId: string): Promise<SpotifyTrackList> {
         try {
             const response = await this.request.make<APIArtist>(artist(artistId), "GET");
 
-            const topTracks = await this.request.make<APIArtistTracks>(`${artistTracks(artistId)}`, "GET");
+            const topTracks = await this.request.make<APIArtistTracks>(artistTracks(artistId), "GET");
 
             return new SpotifyTrackList({
                 type: "ALBUM",
@@ -23,7 +21,7 @@ export class Artist {
             });
         } catch (e: any) {
             return new SpotifyTrackList({
-                type: "ALBUM",
+                type: "NO_MATCHES",
                 tracks: [],
                 exception: {
                     type: "SEVERE",

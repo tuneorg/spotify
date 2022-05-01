@@ -1,15 +1,13 @@
+import { Manager } from "../abstracts/Manager";
 import { playlist } from "../constants/endpoints";
-import { RequestHandler } from "../structures/RequestHandler";
 import { SpotifyTrackList } from "../structures/SpotifyTrackList";
 import { APIPlaylist } from "../typings";
 
-export class Playlist {
-    public constructor(private readonly request: RequestHandler) {}
-
+export class Playlist extends Manager {
     public async resolve(playlistId: string): Promise<SpotifyTrackList> {
         try {
             const response = await this.request.make<APIPlaylist>(playlist(playlistId), "GET");
-            const completeTracks = [];
+            let completeTracks = [];
 
             const tracks = response.tracks;
             completeTracks.push(...tracks.items);
@@ -19,19 +17,20 @@ export class Playlist {
                 completeTracks.push(...nextTracks.items);
                 nextURL = nextTracks.next;
             }
+            completeTracks = completeTracks.filter(i => Boolean(i.track));
 
             return new SpotifyTrackList({
                 type: "PLAYLIST",
-                tracks: completeTracks.filter(i => Boolean(i.track)).map(i => i.track!),
+                tracks: completeTracks.map(i => i.track!),
                 additionalInfo: {
                     name: response.name,
-                    duration: completeTracks.filter(i => Boolean(i.track)).map(i => i.track!).reduce((a, b) => a + b.duration_ms, 0),
+                    duration: completeTracks.reduce((a, b) => a + b.track!.duration_ms, 0),
                     coverPicture: response.images[0]?.url
                 }
             });
         } catch (e: any) {
             return new SpotifyTrackList({
-                type: "PLAYLIST",
+                type: "NO_MATCHES",
                 tracks: [],
                 exception: {
                     type: "SEVERE",
