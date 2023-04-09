@@ -14,7 +14,7 @@ import { Manager } from "../abstracts/Manager";
 export class SpotifyClient {
     private readonly baseURL = "https://api.spotify.com/";
     private readonly request = new RequestHandler(this.baseURL);
-    private readonly managers = {
+    private readonly managers: Record<string, any> = {
         album: new Album(this.request),
         artist: new Artist(this.request),
         playlist: new Playlist(this.request),
@@ -49,12 +49,12 @@ export class SpotifyClient {
     public search(query: string): Promise<SpotifyTrackList> {
         const [, type, id] = this.regex.exec(query) ?? [];
         const manager: Manager | undefined = this.managers[type];
-        if (!manager) throw Error("Invalid Spotify URL.");
+        if (!manager) throw Error(`Invalid Spotify URL. No parser found for resource type: ${type}`);
         return manager.resolve(id);
     }
 
     public searchRecommendations(options: RecommendationsOptions): Promise<SpotifyTrackList> {
-        const _opts = {};
+        const _opts: Record<string, any> = {};
 
         for (const [key, value] of Object.entries(options)) {
             if (Array.isArray(value)) _opts[key] = value.join(",");
