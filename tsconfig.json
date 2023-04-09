@@ -10,7 +10,6 @@
 		"outDir": "dist",
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
-		"suppressImplicitAnyIndexErrors": true,
 		"skipLibCheck": true,
 		"resolveJsonModule": true,
 		"typeRoots": [
