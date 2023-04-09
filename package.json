@@ -44,7 +44,6 @@
     }
   },
   "dependencies": {
-    "@tuneorg/collection": "^1.0.0",
     "undici": "^5.21.0"
   },
   "devDependencies": {
