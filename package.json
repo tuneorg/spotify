@@ -47,7 +47,7 @@
     "undici": ">=5.21.1 <6.x"
   },
   "devDependencies": {
-    "@hazmi35/eslint-config": "^9.0.0",
+    "@hazmi35/eslint-config": "^10.0.0",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
